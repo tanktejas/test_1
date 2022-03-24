@@ -1,17 +1,16 @@
-const multer = require("multer");
 const path = require("path");
-const express = require("express");
+const multer = require("multer");
 
-var multerStorage = multer.diskStorage({
-  destination: function (req, file, callback) {
-    callback(null, path.join(__dirname, "../my_uploads"));
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => { 
+    cb(null, path.join(__dirname, "../my_uploads"));
   },
-  filename: function (req, file, callback) {
-    callback(null, file.originalname);
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);
   },
 });
 
 // For Single File upload
-var multerSigleUpload = multer({ storage: multerStorage });
+var multerSigleUpload = multer({ storage: storage });
 
 module.exports = multerSigleUpload;

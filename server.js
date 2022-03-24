@@ -24,7 +24,7 @@ app.set("view engine", "ejs");
 // app.use(bodyParser.json());
 // app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
-
+app.use(express.static("my_uploads"));
 // For Multer Storage
 
 var multerSigleUpload = require("./multer/multe");
@@ -46,29 +46,50 @@ app.get("/", function (req, res) {
 });
 
 //route for single file upload
-app.post(
-  "/singleFile",
-  multerSigleUpload.single("singleImage"),
-  function (req, res) {
-    const file = req.file;
-    if (!file) {
-      return res.end("Please choose file to upload!");
-    }
-    console.log(req);
-    // Define a JSONobject for the image attributes for saving to database
-    var obj = new image({
-      name: req.body.name,
-      title: req.body.title,
-      desc: req.body.description,
-      img: {
-        data: fs.readFileSync(path.join(__dirname + "/my_uploads/" + "/z.png")), //will get image from react.
-        contentType: "image/png",
-      },
-    });
-    res.redirect("/");
-  }
-);
+app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
+app.post("/imagens", function (req, res) {
+  // multerSigleUpload.single("image");
+  const file = req;
+  console.log(file);
+  if (!file) {      
+    return res.end("Please choose file to upload!");
+  }
+ 
+  // Define a JSONobject for the image attributes for saving to database.
+  // var obj = new image({
+  //   name: req.body.name,
+  //   img: {
+  //     data: req.body.img.data,
+  //     contentType: "image/png",
+  //   },
+  //   title: req.body.name,
+  //   desc: req.body.pesc,
+  //   postdate: req.body.postdate,
+  // });
+  // obj.save();
+  res.redirect("/");
+});
+
+// app.post("/imagens", multerSigleUpload.single("image"), function (req, res) {
+//   const file = req.file;
+//   if (!file) {
+//     return res.end("Please choose file to upload!");
+//   }
+//   console.log(req.file);
+//   // Define a JSONobject for the image attributes for saving to database
+//   var obj = new image({
+//     name: req.body.name,
+//     title: req.body.title,
+//     desc: req.body.description,
+//     img: {
+//       data: "z.png", //will get image from react.
+//       contentType: "image/png",
+//     },
+//   });
+//   res.redirect("/");
+// });
 //route for multiple file upload
 app.post("/multipleFile", function (req, res) {
   multerMultipleUpload(req, res, function (err) {
@@ -85,6 +106,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());
 app.get("/getimageinformation", (req, res) => {
   image.find({}, (err, item) => {
+    console.log(item);
     if (err) res.send(err);
     res.send(item);
   });

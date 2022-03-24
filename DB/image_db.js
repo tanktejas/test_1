@@ -17,11 +17,12 @@ mongoose.connect(
 var imageSchema = new mongoose.Schema({
   name: String,
   img: {
-    data: Buffer,
+    data: String,
     contentType: String,
   },
   title: String,
   desc: String,
+  postdate: String,
 });
 
 const img = new mongoose.model("image", imageSchema);
